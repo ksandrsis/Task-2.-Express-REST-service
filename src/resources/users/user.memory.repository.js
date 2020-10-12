@@ -1,4 +1,4 @@
-let { users } = require('../store');
+let { users, tasks } = require('../store');
 
 const getAll = async () => {
   return users;
@@ -19,6 +19,12 @@ const getById = async id => {
 
 const deleteById = async id => {
   users = users.filter(user => user.id !== id);
+  tasks = tasks.map(task => {
+    if (task.userId === id) {
+      task.userId = null;
+    }
+    return task;
+  });
   return users;
 };
 module.exports = { getAll, addUser, checkForAlreadyExist, getById, deleteById };
