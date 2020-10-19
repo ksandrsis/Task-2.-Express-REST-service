@@ -1,0 +1,40 @@
+{
+  level: 'error',
+  message: SyntaxError: Unexpected token } in JSON at position 47
+      at JSON.parse (<anonymous>)
+      at parse (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\body-parser\lib\types\json.js:89:19)
+      at C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\body-parser\lib\read.js:121:18
+      at invokeCallback (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\raw-body\index.js:224:16)
+      at done (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\raw-body\index.js:213:7)
+      at IncomingMessage.onEnd (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\raw-body\index.js:273:7)
+      at IncomingMessage.emit (events.js:314:20)
+      at endReadableNT (_stream_readable.js:1223:12)
+      at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+    expose: true,
+    statusCode: 400,
+    status: 400,
+    body: '{\n  "login": "string",\n  "password": "string",\n}',
+    type: 'entity.parse.failed'
+  },
+  timestamp: '2020-10-19T19:07:26.625Z'
+}
+{
+  level: 'error',
+  message: SyntaxError: Unexpected token } in JSON at position 47
+      at JSON.parse (<anonymous>)
+      at parse (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\body-parser\lib\types\json.js:89:19)
+      at C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\body-parser\lib\read.js:121:18
+      at invokeCallback (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\raw-body\index.js:224:16)
+      at done (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\raw-body\index.js:213:7)
+      at IncomingMessage.onEnd (C:\Users\ksand\WebstormProjects\Task-2.-Express-REST-service\node_modules\raw-body\index.js:273:7)
+      at IncomingMessage.emit (events.js:314:20)
+      at endReadableNT (_stream_readable.js:1223:12)
+      at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+    expose: true,
+    statusCode: 400,
+    status: 400,
+    body: '{\n  "login": "string",\n  "password": "string",\n}',
+    type: 'entity.parse.failed'
+  },
+  timestamp: '2020-10-19T19:07:41.909Z'
+}
