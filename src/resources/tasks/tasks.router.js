@@ -2,12 +2,13 @@ const router = require('express').Router();
 const tasksService = require('./tasks.service');
 const handler = require('../../utils/handler');
 const createSuccessObj = require('../../utils/success');
+const Task = require('./tasks.model');
 
 router.route('/:boardId/tasks').get(
   handler(async (req, res, next) => {
     const { boardId } = req.params;
     const tasks = await tasksService.getTasksByBoardId(boardId);
-    res.json(tasks.map(task => task.toResponse()));
+    res.json(tasks.map(task => Task.toResponse(task)));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -15,7 +16,7 @@ router.route('/:boardId/tasks').get(
         type: 'get',
         queryParams: req.params,
         body: req.body,
-        result: tasks.map(task => task.toResponse())
+        result: tasks.map(task => Task.toResponse(task))
       })
     );
   })
@@ -40,7 +41,7 @@ router.route('/:boardId/tasks').post(
       boardId: boardIdInBody || boardId,
       columnId
     });
-    res.json(task.toResponse());
+    res.json(Task.toResponse(task));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -48,7 +49,7 @@ router.route('/:boardId/tasks').post(
         url: '/:boardId/tasks',
         queryParams: req.params,
         body: req.body,
-        result: task.toResponse()
+        result: Task.toResponse(task)
       })
     );
   })
@@ -57,8 +58,8 @@ router.route('/:boardId/tasks').post(
 router.route('/:boardId/tasks/:taskId').get(
   handler(async (req, res, next) => {
     const { boardId, taskId } = req.params;
-    const task = await tasksService.findTask(taskId, boardId);
-    res.json(task.toResponse());
+    const task = await tasksService.findTask({ taskId, boardId });
+    res.json(Task.toResponse(task));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -66,7 +67,7 @@ router.route('/:boardId/tasks/:taskId').get(
         url: '/:boardId/tasks/:taskId',
         queryParams: req.params,
         body: req.body,
-        result: task.toResponse()
+        result: Task.toResponse(task)
       })
     );
   })
@@ -75,7 +76,6 @@ router.route('/:boardId/tasks/:taskId').get(
 router.route('/:boardId/tasks/:taskId').put(
   handler(async (req, res, next) => {
     const { boardId, taskId } = req.params;
-    const task = await tasksService.findTask(taskId, boardId);
     const {
       title,
       order,
@@ -91,9 +91,9 @@ router.route('/:boardId/tasks/:taskId').put(
       userId,
       boardId: boardIdInBody || boardId,
       columnId,
-      task
+      taskId
     });
-    res.json(updatedTask.toResponse());
+    res.json(Task.toResponse(updatedTask));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -101,7 +101,7 @@ router.route('/:boardId/tasks/:taskId').put(
         url: '/:boardId/tasks/:taskId',
         queryParams: req.params,
         body: req.body,
-        result: updatedTask.toResponse()
+        result: Task.toResponse(updatedTask)
       })
     );
   })
@@ -110,8 +110,7 @@ router.route('/:boardId/tasks/:taskId').put(
 router.route('/:boardId/tasks/:taskId').delete(
   handler(async (req, res, next) => {
     const { boardId, taskId } = req.params;
-    await tasksService.findTask(taskId, boardId);
-    await tasksService.deleteTask(taskId, boardId);
+    await tasksService.deleteTask({ taskId, boardId });
     res.status(204).end();
     next(
       createSuccessObj({

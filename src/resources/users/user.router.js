@@ -2,11 +2,12 @@ const router = require('express').Router();
 const usersService = require('./user.service');
 const handler = require('../../utils/handler');
 const createSuccessObj = require('../../utils/success');
+const User = require('./user.model');
 
 router.route('/').get(
   handler(async (req, res, next) => {
     const users = await usersService.getAll();
-    res.json(users.map(user => user.toResponse()));
+    res.json(users.map(user => User.toResponse(user)));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -14,7 +15,7 @@ router.route('/').get(
         type: 'get',
         queryParams: req.params,
         body: req.body,
-        result: users.map(user => user.toResponse())
+        result: users.map(user => User.toResponse(user))
       })
     );
   })
@@ -24,7 +25,7 @@ router.route('/').post(
   handler(async (req, res, next) => {
     const { name, login, password } = req.body;
     const user = await usersService.addUser(name, login, password);
-    res.json(user.toResponse());
+    res.json(User.toResponse(user));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -32,7 +33,7 @@ router.route('/').post(
         type: 'post',
         queryParams: req.params,
         body: req.body,
-        result: user.toResponse()
+        result: User.toResponse(user)
       })
     );
   })
@@ -41,7 +42,7 @@ router.route('/').post(
 router.route('/:id').get(
   handler(async (req, res, next) => {
     const user = await usersService.getById(req.params.id);
-    res.json(user.toResponse());
+    res.json(User.toResponse(user));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -49,7 +50,7 @@ router.route('/:id').get(
         type: 'get',
         queryParams: req.params,
         body: req.body,
-        result: user.toResponse()
+        result: User.toResponse(user)
       })
     );
   })
@@ -58,14 +59,13 @@ router.route('/:id').get(
 router.route('/:id').put(
   handler(async (req, res, next) => {
     const { name, login, password } = req.body;
-    const user = await usersService.getById(req.params.id);
     const updatedUser = await usersService.updateUser(
-      user,
       name,
       login,
-      password
+      password,
+      req.params.id
     );
-    res.json(updatedUser.toResponse());
+    res.json(User.toResponse(updatedUser));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -73,7 +73,7 @@ router.route('/:id').put(
         type: 'put',
         queryParams: req.params,
         body: req.body,
-        result: updatedUser.toResponse()
+        result: User.toResponse(updatedUser)
       })
     );
   })

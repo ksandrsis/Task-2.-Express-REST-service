@@ -1,10 +1,10 @@
 const boom = require('boom');
-const boardsRepo = require('./board.memory.repository');
+const boardsRepo = require('./board.db.repository');
 const Board = require('./boards.model');
 const Column = require('./columns.model');
 const { newBoard } = require('./boards.schema');
 
-const getAll = () => boardsRepo.getAll();
+const getAll = async () => await boardsRepo.getAll();
 
 const createBoard = (title, columns) => {
   const { error } = newBoard.validate({ title, columns });
@@ -26,18 +26,23 @@ const getById = async id => {
   return board;
 };
 
-const deleteBoardById = id => {
-  return boardsRepo.deleteBoardById(id);
+const deleteBoardById = async id => {
+  const ok = await boardsRepo.deleteBoardById(id);
+  if (!ok) {
+    throw boom.notFound("This board doesn't exist", {
+      request: 'getByIdBoard'
+    });
+  }
+  return ok;
 };
 
-const updateBoard = (board, title, columns) => {
+const updateBoard = async (id, title, columns) => {
   const { error } = newBoard.validate({ title, columns });
   if (error) throw boom.badRequest(error.message, { request: 'updateBoard' });
-  const newColumns = columns.map(({ title: titleColumn, order, id }) => {
-    return new Column({ id, order, title: titleColumn });
+  const newColumns = columns.map(({ title: titleColumn, order, id: colId }) => {
+    return new Column({ id: colId, order, title: titleColumn });
   });
-  board.update(title, newColumns);
-  return board;
+  return await boardsRepo.update({ id, title, newColumns });
 };
 
 module.exports = { getAll, createBoard, getById, updateBoard, deleteBoardById };

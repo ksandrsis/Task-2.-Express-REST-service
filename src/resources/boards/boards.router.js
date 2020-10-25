@@ -2,13 +2,14 @@ const router = require('express').Router();
 const boardsService = require('./boards.service');
 const handler = require('../../utils/handler');
 const createSuccessObj = require('../../utils/success');
+const Board = require('./boards.model');
 
 router.use('/', require('../tasks/tasks.router'));
 
 router.route('/').get(
   handler(async (req, res, next) => {
     const boards = await boardsService.getAll();
-    res.json(boards.map(board => board.toResponse()));
+    res.json(boards.map(board => Board.toResponse(board)));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -16,7 +17,7 @@ router.route('/').get(
         type: 'get',
         queryParams: req.params,
         body: req.body,
-        result: boards.map(board => board.toResponse())
+        result: boards.map(board => Board.toResponse(board))
       })
     );
   })
@@ -26,7 +27,7 @@ router.route('/').post(
   handler(async (req, res, next) => {
     const { title, columns } = req.body;
     const board = await boardsService.createBoard(title, columns);
-    res.json(board.toResponse());
+    res.json(Board.toResponse(board));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -34,7 +35,7 @@ router.route('/').post(
         type: 'post',
         queryParams: req.params,
         body: req.body,
-        result: board.toResponse()
+        result: Board.toResponse(board)
       })
     );
   })
@@ -44,7 +45,7 @@ router.route('/:id').get(
   handler(async (req, res, next) => {
     const { id } = req.params;
     const board = await boardsService.getById(id);
-    res.json(board.toResponse());
+    res.json(Board.toResponse(board));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -52,7 +53,7 @@ router.route('/:id').get(
         type: 'get',
         queryParams: req.params,
         body: req.body,
-        result: board.toResponse()
+        result: Board.toResponse(board)
       })
     );
   })
@@ -61,10 +62,9 @@ router.route('/:id').get(
 router.route('/:id').put(
   handler(async (req, res, next) => {
     const { id } = req.params;
-    const board = await boardsService.getById(id);
     const { title, columns } = req.body;
-    await boardsService.updateBoard(board, title, columns);
-    res.json(board.toResponse());
+    const board = await boardsService.updateBoard(id, title, columns);
+    res.json(Board.toResponse(board));
     next(
       createSuccessObj({
         statusCode: 200,
@@ -72,7 +72,7 @@ router.route('/:id').put(
         type: 'put',
         queryParams: req.params,
         body: req.body,
-        result: board.toResponse()
+        result: Board.toResponse(board)
       })
     );
   })
@@ -81,7 +81,6 @@ router.route('/:id').put(
 router.route('/:id').delete(
   handler(async (req, res, next) => {
     const { id } = req.params;
-    await boardsService.getById(id);
     await boardsService.deleteBoardById(id);
     res.status(204).end();
     next(
