@@ -6,7 +6,7 @@ const getAll = async () => {
 };
 
 const addUser = async user => {
-  user.save();
+  await user.save();
   return user;
 };
 

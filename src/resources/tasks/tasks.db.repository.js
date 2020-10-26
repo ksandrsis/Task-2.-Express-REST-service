@@ -3,7 +3,7 @@ const Task = require('./tasks.model');
 const getTasksByBoardId = async boardId => Task.find({ boardId });
 
 const addTask = async task => {
-  task.save();
+  await task.save();
   return task;
 };
 
